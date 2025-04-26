@@ -1,0 +1,418 @@
+<!-- particles.js container -->
+<div id="particles-js"></div>
+
+<!-- stats - count particles -->
+<div class="count-particles">
+  <span class="js-count-particles">--</span> particles
+</div>
+
+<!-- particles.js lib (JavaScript CodePen settings): https://github.com/VincentGarreau/particles.js -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Combined Player Stats</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Particle.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+    <style>
+        /* Custom styles for the FIFA card - Refined Glassmorphism */
+        .fifa-card {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+            padding: 1.5rem;
+            width: 320px;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            font-family: 'Roboto', sans-serif;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            margin: 2rem auto;
+            align-items: center;
+        }
+
+        .fifa-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .player-image {
+            width: 180px;
+            margin: 0 auto 1rem;
+            border-radius: 0.5rem;
+            transition: transform 0.2s ease-in-out;
+            display: block;
+        }
+
+        .player-image:hover {
+            transform: scale(1.05);
+        }
+
+        .player-name {
+            font-size: 1.85rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            letter-spacing: -0.02em;
+        }
+
+        .player-info {
+            font-size: 1.1rem;
+            color: #ffffff;
+            margin-bottom: 0.75rem;
+            opacity: 0.9;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .player-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            order: 2;
+            width: 100%;
+        }
+
+        .stat {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #ffffff;
+            opacity: 0.85;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .card-footer {
+            text-align: center;
+            order: 3;
+            width: 100%;
+        }
+
+        .portfolio-button {
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+            color: #ffffff;
+            padding: 0.8rem 1.75rem;
+            border-radius: 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+            transition: background-color 0.3s ease-in-out, transform 0.1s ease-in-out;
+            display: inline-block;
+            cursor: pointer;
+            backdrop-filter: blur(7px);
+        }
+
+        .portfolio-button:hover {
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.15));
+            transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .portfolio-button:active {
+            transform: translateY(0) scale(1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Player Stats Styles */
+        body {
+            font-family: sans-serif;
+            background-color: #181818;
+            color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+            position: relative; /* Ensure the content sits above the particles */
+        }
+
+        .stats-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .category {
+            background-color: #222;
+            border-radius: 10px;
+            padding: 20px;
+            width: calc(25% - 15px);
+            box-sizing: border-box;
+        }
+
+        .category h2 {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #ddd;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .category h2 .rating {
+            font-size: 0.9em;
+            color: #f9d342;
+        }
+
+        .stat {
+            font-size: 0.9em;
+            color: #aaa;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .stat span {
+            font-weight: bold;
+            color: #fff;
+        }
+
+        /* Particle Background */
+        #particles-js {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Ensure it stays in the background */
+        }
+
+        @media (max-width: 1200px) {
+            .category {
+                width: calc(33.33% - 13.33px);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .category {
+                width: calc(50% - 10px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-container {
+                flex-direction: column;
+            }
+
+            .category {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+  
+<body class="bg-gradient-to-br from-gray-900 to-black min-h-screen flex-col items-center justify-center p-4">
+    <div class="fifa-card" style="margin-bottom: 2rem;">
+        <img src="https://via.placeholder.com/180x270" alt="Player Image" class="player-image">
+        <h2 class="player-name">Your Name</h2>
+        <p class="player-info">Position: Developer | Location: Your City</p>
+        <div class="player-stats">
+            <div class="stat">
+                <div class="stat-value">99</div>
+                <div class="stat-label">Coding</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">99</div>
+                <div class="stat-label">Design</div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <a href="#" class="portfolio-button">View My Portfolio</a>
+        </div>
+    </div>
+
+    <div class="stats-container">
+        <div class="category">
+            <h2>Productivity <span class="rating">75</span></h2>
+            <div class="stat">Delivery speed <span>73</span></div>
+            <div class="stat">Time Management <span>77</span></div>
+        </div>
+
+        <div class="category">
+            <h2>Code Quality <span class="rating">82</span></h2>
+            <div class="stat">Code Efficiency <span>86</span></div>
+            <div class="stat">Bug Frequency <span>84</span></div>
+            <div class="stat">Code Review Quality <span>81</span></div>
+        </div>
+
+        <div class="category">
+            <h2>Collaboration <span class="rating">83</span></h2>
+            <div class="stat">Communication <span>86</span></div>
+            <div class="stat">Code Handoff <span>78</span></div>
+            <div class="stat">Documentation skills <span>74</span></div>
+            <div class="stat">Learning Speed <span>87</span></div>
+            <div class="stat">Adaptability to New Tech <span>88</span></div>
+            <div class="stat">Open Source Contribution <span>75</span></div>
+            <div class="stat">UI/UX Sensibility <span>82</span></div>
+        </div>
+
+        <div class="category">
+            <h2>Problem Solving <span class="rating">88</span></h2>
+            <div class="stat">Debugging Skills <span>90</span></div>
+            <div class="stat">Algorithmic Thinking <span>87</span></div>
+            <div class="stat">Creativity <span>88</span></div>
+        </div>
+
+        <div class="category">
+            <h2>Reliability <span class="rating">80</span></h2>
+            <div class="stat">Handling Critical Bugs <span>78</span></div>
+            <div class="stat">Incident Response <span>80</span></div>
+            <div class="stat">Testing Coverage <span>82</span></div>
+        </div>
+
+        <div class="category">
+            <h2>Problem Solving & Algorithms <span class="rating">90</span></h2>
+            <div class="stat">Algorithm Optimization <span>92</span></div>
+            <div class="stat">Data Structures <span>89</span></div>
+            <div class="stat">System Design <span>88</span></div>
+            <div class="stat">Debugging & Troubleshooting <span>91</span></div>
+        </div>
+
+        <div class="category">
+            <h2>Graphic Design <span class="rating">85</span></h2>
+            <div class="stat">Logo Design <span>90</span></div>
+            <div class="stat">Typography <span>87</span></div>
+            <div class="stat">Color Theory <span>85</span></div>
+            <div class="stat">Illustration & Artwork <span>82</span></div>
+            <div class="stat">Adobe Creative Suite (Photoshop, Illustrator, etc.) <span>88</span></div>
+            <div class="stat">UI/UX Design <span>80</span></div>
+            <div class="stat">Branding & Visual Identity <span>84</span></div>
+        </div>
+
+        <div class="category">
+            <h2>Game Design <span class="rating">80</span></h2>
+            <div class="stat">Game Mechanics <span>82</span></div>
+            <div class="stat">Level Design <span>78</span></div>
+            <div class="stat">User Experience (UX) <span>80</span></div>
+            <div class="stat">Game Engine (Unity, Unreal) <span>83</span></div>
+            <div class="stat">Scripting & Programming <span>75</span></div>
+            <div class="stat">AI for Games <span>77</span></div>
+            <div class="stat">Multiplayer Systems <span>70</span></div>
+        </div>
+
+        <div class="category">
+            <h2>Frontend Skills <span class="rating">85</span></h2>
+            <div class="stat">HTML / CSS <span>90</span></div>
+            <div class="stat">JavaScript <span>88</span></div>
+            <div class="stat">React / Vue <span>84</span></div>
+            <div class="stat">Responsive Design <span>86</span></div>
+            <div class="stat">UI Frameworks (Tailwind, Bootstrap) <span>82</span></div>
+        </div>
+
+        <div class="category">
+            <h2>Backend Skills <span class="rating">83</span></h2>
+            <div class="stat">API Design <span>85</span></div>
+            <div class="stat">Node.js / Python / Java <span>82</span></div>
+            <div class="stat">Authentication / Security <span>80</span></div>
+            <div class="stat">Server Architecture <span>83</span></div>
+            <div class="stat">Performance Optimization <span>84</span></div>
+        </div>
+
+        <div class="category">
+            <h2>DevOps & Tools <span class="rating">76</span></h2>
+            <div class="stat">Docker <span>80</span></div>
+            <div class="stat">Kubernetes <span>70</span></div>
+            <div class="stat">CI/CD <span>75</span></div>
+            <div class="stat">Cloud Platforms (AWS, Azure) <span>78</span></div>
+            <div class="stat">Version Control (Git) <span>85</span></div>
+        </div>
+    </div>
+    </div>
+    <!-- Particle.js Initialization -->
+    <script>
+        particlesJS('particles-js', {
+            particles: {
+                number: {
+                    value: 100,
+                    density: {
+                        enable: true,
+                        value_area: 800
+                    }
+                },
+                color: {
+                    value: "#ffffff"
+                },
+                shape: {
+                    type: "circle",
+                    stroke: {
+                        width: 0,
+                        color: "#000000"
+                    }
+                },
+                opacity: {
+                    value: 0.5,
+                    random: true,
+                    anim: {
+                        enable: true,
+                        speed: 1,
+                        opacity_min: 0.1,
+                        sync: false
+                    }
+                },
+                size: {
+                    value: 5,
+                    random: true,
+                    anim: {
+                        enable: false
+                    }
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: "#ffffff",
+                    opacity: 0.4,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 2,
+                    direction: "none",
+                    random: true,
+                    straight: false,
+                    out_mode: "out",
+                    bounce: false
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: {
+                        enable: true,
+                        mode: "repulse"
+                    },
+                    onclick: {
+                        enable: true,
+                        mode: "push"
+                    }
+                }
+            },
+            retina_detect: true
+        });
+    </script>
+</body>
+</html>
