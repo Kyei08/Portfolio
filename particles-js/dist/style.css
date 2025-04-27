@@ -58,3 +58,48 @@ canvas {
 .count-particles{
   border-radius: 0 0 3px 3px;
 }
+/* Existing styles */
+
+/* ... (your previous CSS) ... */
+
+/* Media query for screens up to a certain width (e.g., 768px for typical tablets/smaller devices) */
+@media (max-width: 768px) {
+  .stats-container {
+    display: grid; /* Use grid layout for better control */
+    grid-template-columns: repeat(2, 1fr); /* Create two equal columns */
+    gap: 15px; /* Adjust the gap between grid items as needed */
+  }
+
+  .category {
+    width: auto; /* Let the grid control the width */
+  }
+}
+
+/* Media query for even smaller mobile screens (e.g., 600px or less) */
+@media (max-width: 600px) {
+  .stats-container {
+    grid-template-columns: repeat(1, 1fr); /* Switch to a single column layout */
+  }
+}
+
+/* If you specifically want a 3x2 layout on *some* mobile screens, you might need to target a specific range */
+@media (min-width: 601px) and (max-width: 768px) {
+  .stats-container {
+    grid-template-columns: repeat(2, 1fr); /* Two columns */
+  }
+
+  .category {
+    /* You might need to adjust padding or font sizes here to make them fit nicely */
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .category h2 {
+    font-size: 1em; /* Adjust heading size for smaller screens */
+  }
+
+  .stat {
+    font-size: 0.8em; /* Adjust stat size */
+  }
+}
